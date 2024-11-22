@@ -15,7 +15,7 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <DashboardHeader />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-6 py-12">
       <div className="flex justify-center -mt-8 -mb-8"> 
         <div className="w-[min(90vw,800px)] h-[min(25vh,240px)]">
           <Logo className="w-full h-full object-contain  aspect-[6=3/1]" />
@@ -36,7 +36,7 @@ export default async function DashboardPage() {
           <DashboardCharts data={monthlyData} />
         </AnimatedSection>
         <AnimatedSection className="mt-12">
-          <h2 className="text-2xl font-semibold mb-4 text-foreground">Demographics</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-foreground">Session Demographics</h2>
           <DashboardDemographics data={demographicData} />
         </AnimatedSection>
       </main>

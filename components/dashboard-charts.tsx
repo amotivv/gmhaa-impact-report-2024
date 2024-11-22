@@ -1,8 +1,21 @@
 "use client"
 
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { CounselingCostInfo } from "@/components/counseling-cost-info"
+
+import { 
+  Bar, 
+  BarChart, 
+  ComposedChart,  // Add this
+  ResponsiveContainer, 
+  Tooltip, 
+  XAxis, 
+  YAxis,
+  Area, 
+  AreaChart, 
+  Line 
+} from "recharts"
 
 interface TooltipPayloadItem {
   value: number;
@@ -10,14 +23,28 @@ interface TooltipPayloadItem {
   dataKey: string;
 }
 
+const formatValue = (value: number, type: 'sessions' | 'dollars') => {
+  if (type === 'dollars') {
+    return new Intl.NumberFormat('en-US', { 
+      style: 'currency', 
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(value);
+  }
+  return value.toLocaleString();
+}
+
 const CustomTooltip = ({ 
   active, 
   payload, 
-  label 
+  label,
+  type = 'sessions'
 }: {
   active?: boolean;
   payload?: TooltipPayloadItem[];
   label?: string;
+  type?: 'sessions' | 'dollars';
 }) => {
   if (active && payload && payload.length) {
     return (
@@ -28,11 +55,14 @@ const CustomTooltip = ({
               {label}
             </span>
             <span className="font-bold text-blue-500">
-              Monthly: {payload[0].value}
+              {type === 'sessions' ? 'Monthly: ' : 'Amount: '}
+              {formatValue(payload[0]?.value, type)}
             </span>
-            <span className="font-bold text-green-500">
-              Running Total: {payload[1].value}
-            </span>
+            {payload.length > 1 && (
+              <span className="font-bold text-green-500">
+                Running Total: {formatValue(payload[1]?.value, type)}
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -64,87 +94,68 @@ export function DashboardCharts({ data }: { data: MonthData[] }) {
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+      <Card className="col-span-4 -mx-2 sm:mx-0">
           <CardHeader>
-            <CardTitle>Monthly Sessions</CardTitle>
-            <CardDescription>Blue bars show monthly sessions, green bars show running total</CardDescription>
+            <CardTitle>Monthly Counseling Sessions</CardTitle>
+            <CardDescription>
+              Monthly sessions (bars) and cumulative impact (line) over time
+            </CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={enrichedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <XAxis 
-                  dataKey="month" 
-                  tickLine={false} 
-                  axisLine={false}
-                  stroke="#888888"
-                  fontSize={12}
-                />
-                <YAxis 
-                  tickLine={false} 
-                  axisLine={false}
-                  stroke="#888888"
-                  fontSize={12}
-                />
-                <Tooltip content={<CustomTooltip />} />
+              <ComposedChart data={enrichedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <XAxis dataKey="month" />
+                <YAxis yAxisId="left" orientation="left" stroke="#2563eb" />
+                <YAxis yAxisId="right" orientation="right" stroke="#16a34a" />
+                <Tooltip content={<CustomTooltip type="sessions" />} />
                 <Bar 
+                  yAxisId="left"
                   dataKey="sessions" 
                   fill="#2563eb" 
                   radius={[4, 4, 0, 0]} 
-                  name="Monthly Sessions"
                 />
-                <Bar 
-                  dataKey="runningTotalSessions" 
-                  fill="#16a34a" 
-                  radius={[4, 4, 0, 0]} 
-                  name="Total Sessions"
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="runningTotalSessions"
+                  stroke="#16a34a"
+                  strokeWidth={2}
+                  dot={false}
                 />
-              </BarChart>
+              </ComposedChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
+
         <Card className="col-span-3">
           <CardHeader>
-            <CardTitle>Monthly Dollars</CardTitle>
-            <CardDescription>Blue bars show monthly amount, green bars show running total</CardDescription>
+            <CardTitle>Cumulative Financial Impact</CardTitle>
+            <CardDescription>
+              Total dollars granted over time, showing growing community investment
+            </CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={enrichedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <XAxis 
-                  dataKey="month" 
-                  tickLine={false} 
-                  axisLine={false}
-                  stroke="#888888"
-                  fontSize={12}
+              <AreaChart data={enrichedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip content={<CustomTooltip type="dollars" />} />
+                <Area
+                  type="monotone"
+                  dataKey="runningTotalDollars"
+                  fill="#16a34a"
+                  stroke="#16a34a"
+                  fillOpacity={0.2}
                 />
-                <YAxis 
-                  tickLine={false} 
-                  axisLine={false}
-                  stroke="#888888"
-                  fontSize={12}
-                />
-                <Tooltip content={<CustomTooltip />} />
                 <Bar 
                   dataKey="dollars" 
                   fill="#2563eb" 
                   radius={[4, 4, 0, 0]} 
-                  name="Monthly Dollars"
                 />
-                <Bar 
-                  dataKey="runningTotalDollars" 
-                  fill="#16a34a" 
-                  radius={[4, 4, 0, 0]} 
-                  name="Total Dollars"
-                />
-              </BarChart>
+              </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
-      </div>
-      <div className="flex justify-center">
-        <div className="mt-8 w-full max-w-2xl">  {/* Added max-w-2xl */}
-          <CounselingCostInfo />
-        </div>
       </div>
     </div>
   )

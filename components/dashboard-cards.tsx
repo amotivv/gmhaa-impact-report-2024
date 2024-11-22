@@ -25,7 +25,7 @@ export function DashboardCards({ data }: DashboardCardsProps) {
             {totalSessions}
           </div>
           <p className="text-base sm:text-base text-blue-600/80 dark:text-blue-400/80 mt-1">
-            Total sessions funded this year
+            Total counseling sessions funded this year
           </p>
         </CardContent>
       </Card>
@@ -55,15 +55,15 @@ export function DashboardCards({ data }: DashboardCardsProps) {
           </p>
         </CardContent>
       </Card>
-      <Card className="bg-rose-50 dark:bg-rose-950">
+      <Card className="bg-amber-50 dark:bg-amber-950">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base sm:text-base font-medium">First-time Sessions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-4xl sm:text-4xl font-bold text-rose-600 dark:text-rose-400">
+          <div className="text-4xl sm:text-4xl font-bold text-amber-600 dark:text-amber-400">
             {firstTimeSessions}
           </div>
-          <p className="text-base sm:text-base text-rose-600/80 dark:text-rose-400/80 mt-1">
+          <p className="text-base sm:text-base text-amber-600/80 dark:text-amber-400/80 mt-1">
             New individuals receiving support
           </p>
         </CardContent>
