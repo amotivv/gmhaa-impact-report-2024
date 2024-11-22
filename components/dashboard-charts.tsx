@@ -2,11 +2,9 @@
 
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { CounselingCostInfo } from "@/components/counseling-cost-info"
 
 import { 
-  Bar, 
-  BarChart, 
+  Bar,  
   ComposedChart,  // Add this
   ResponsiveContainer, 
   Tooltip, 
