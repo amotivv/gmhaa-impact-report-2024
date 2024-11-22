@@ -2,7 +2,6 @@
 
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { getDemographicData } from "@/lib/data"
 
 const COLORS = [
   '#2563eb', // blue-600

@@ -4,13 +4,19 @@ import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recha
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { CounselingCostInfo } from "@/components/counseling-cost-info"
 
+interface TooltipPayloadItem {
+  value: number;
+  name: string;
+  dataKey: string;
+}
+
 const CustomTooltip = ({ 
   active, 
   payload, 
   label 
 }: {
   active?: boolean;
-  payload?: any[];
+  payload?: TooltipPayloadItem[];
   label?: string;
 }) => {
   if (active && payload && payload.length) {

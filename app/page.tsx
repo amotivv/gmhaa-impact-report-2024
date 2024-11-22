@@ -19,7 +19,7 @@ export default async function DashboardPage() {
           Your 2024 Community Impact
         </h1>
         <p className="text-center text-muted-foreground mb-8 text-lg">  {/* Added -mt-1 */}
-        Your generosity + GMHAA's partnerships have made a huge difference!
+        Your generosity + GMHAA&apos;s partnerships have made a huge difference!
         </p>
         <AnimatedSection>
           <h2 className="text-2xl font-semibold mb-4 text-foreground">Key Metrics</h2>
