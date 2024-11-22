@@ -11,7 +11,7 @@ export function DashboardHeader() {
   return (
     <header className="bg-background border-b">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-foreground">GMHAA Impact</h2>
+      <h2 className="text-sm font-normal text-foreground/70">GMHAA Impact Report</h2>
         <Button
           variant="ghost"
           size="icon"
