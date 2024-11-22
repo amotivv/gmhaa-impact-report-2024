@@ -92,14 +92,14 @@ export function DashboardCharts({ data }: { data: MonthData[] }) {
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-      <Card className="col-span-4 -mx-2 sm:mx-0">
+      <Card className="col-span-4">
           <CardHeader>
             <CardTitle>Monthly Counseling Sessions</CardTitle>
             <CardDescription>
               Monthly sessions (bars) and cumulative impact (line) over time
             </CardDescription>
           </CardHeader>
-          <CardContent className="h-[300px]">
+          <CardContent className="h-[300px] px-0">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={enrichedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <XAxis dataKey="month" />
@@ -125,7 +125,7 @@ export function DashboardCharts({ data }: { data: MonthData[] }) {
           </CardContent>
         </Card>
 
-        <Card className="col-span-3">
+        <Card className="col-span-4 lg:col-span-3">
           <CardHeader>
             <CardTitle>Cumulative Financial Impact</CardTitle>
             <CardDescription>
