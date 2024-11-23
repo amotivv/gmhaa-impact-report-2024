@@ -7,7 +7,30 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "GMHAA Impact Report 2024",
-  description: "Non-profit impact report detailing monetary disbursements to pay for individual mental health counseling sessions.",
+  description: "Non-profit impact report detailing monetary disbursements to pay for individual mental health counseling sessions in Muscogee County, Georgia.",
+  metadataBase: new URL('https://impact2024.gmhaa.org'),
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://impact2024.gmhaa.org',
+    title: 'GMHAA Impact Report 2024',
+    description: 'Non-profit impact report detailing monetary disbursements to pay for individual mental health counseling sessions in Muscogee County, Georgia.',
+    siteName: 'GMHAA Impact Report',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'GMHAA Impact Report 2024',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GMHAA Impact Report 2024',
+    description: 'Non-profit impact report detailing monetary disbursements to pay for individual mental health counseling sessions in Muscogee County, Georgia.',
+    images: ['/og-image.jpg'],
+  }
 }
 
 export default function RootLayout({

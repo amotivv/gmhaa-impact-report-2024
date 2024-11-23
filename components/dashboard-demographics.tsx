@@ -137,7 +137,7 @@ function DemographicCard({ title, data }: { title: string; data: { name: string;
       <CardHeader>
         <CardTitle className="text-base font-medium">{title}</CardTitle>
         <CardDescription className="text-sm text-muted-foreground">
-          Distribution of sessions across {title.toLowerCase().replace('Sessions by ', '')}
+          Distribution of sessions across {title.toLowerCase().replace('sessions by ', '')}
         </CardDescription>
       </CardHeader>
       <CardContent>

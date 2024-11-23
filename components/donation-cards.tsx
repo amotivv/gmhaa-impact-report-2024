@@ -66,6 +66,16 @@ export function DonationCards({ data }: DonationCardsProps) {
           </Card>
       </div>
       <DonateButton />
-</div>
+      <div className="text-center">
+      <a 
+          href="https://gmhaa.org" 
+          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Visit GMHAA.org to learn more
+        </a>
+      </div>
+    </div>
     )
   }
