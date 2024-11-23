@@ -48,12 +48,17 @@ export function DonationCards({ data }: DonationCardsProps) {
           </CardContent>
         </Card>
   
-        <Card 
-          className="bg-purple-50 dark:bg-purple-950 cursor-pointer hover:opacity-90 transition-opacity"
-          onClick={() => {
-            if (window.FundraiseUp) window.FundraiseUp.openCheckout('#XGZDYZAY');
-          }}
-        >
+
+          <a href="#XGZDYZAY" style={{ display: 'none' }}></a>
+          <Card 
+            className="bg-purple-50 dark:bg-purple-950 cursor-pointer hover:opacity-90 transition-opacity"
+            onClick={() => {
+                const element = document.querySelector('a[href="#XGZDYZAY"]') as HTMLAnchorElement;
+                if (element) {
+                  element.click();
+                }
+            }}
+          >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base sm:text-base font-medium">Donate Now</CardTitle>
             <Heart className="h-5 w-5 text-purple-500" />
@@ -66,7 +71,7 @@ export function DonationCards({ data }: DonationCardsProps) {
               Make a difference today
             </p>
           </CardContent>
-        </Card>
+          </Card>
       </div>
     )
   }
