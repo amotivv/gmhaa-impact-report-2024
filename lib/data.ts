@@ -29,13 +29,17 @@ export interface DonationRecord {
   fees_covered: boolean;
 }
 
+if (!process.env.SESSIONS_DATA_URL || !process.env.DONATIONS_DATA_URL) {
+  throw new Error('Missing required environment variables for data sources');
+}
+
 export async function fetchData(): Promise<SessionRecord[]> {
-  const response = await fetch('https://static.amotivv.io/virtualcards_lcg_20241122-235052.json');
+  const response = await fetch(process.env.SESSIONS_DATA_URL!);
   return response.json();
 }
 
 export async function fetchDonations(): Promise<DonationRecord[]> {
-  const response = await fetch('https://static.amotivv.io/gmhaa_donations_1_20241122-164255.json');
+  const response = await fetch(process.env.DONATIONS_DATA_URL!);
   return response.json();
 }
 
