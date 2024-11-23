@@ -64,8 +64,17 @@ export function DashboardCards({ data }: DashboardCardsProps) {
             {truthSpringCount}
           </div>
           <p className="text-base sm:text-base text-amber-600/80 dark:text-amber-400/80 mt-1">
-            Sessions provided to Truth Spring Academy students!
-          </p>
+              Sessions provided to{' '}
+              <a 
+                href="https://www.gmhaa.org/impact-2024#our-mission" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="underline hover:text-amber-700 dark:hover:text-amber-300"
+              >
+                Truth Spring Academy
+              </a>
+              {' '}students!
+            </p>
         </CardContent>
       </Card>
     </div>
