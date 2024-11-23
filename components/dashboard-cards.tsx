@@ -6,12 +6,12 @@ interface DashboardCardsProps {
     totalSessions: number;
     totalDisbursed: number;
     averagePerSession: number;
-    firstTimeSessions: number;
+    truthSpringCount: number;
   }
 }
 
 export function DashboardCards({ data }: DashboardCardsProps) {
-  const { totalSessions, totalDisbursed, averagePerSession, firstTimeSessions } = data
+  const { totalSessions, totalDisbursed, averagePerSession, truthSpringCount } = data
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -38,7 +38,7 @@ export function DashboardCards({ data }: DashboardCardsProps) {
             ${totalDisbursed.toLocaleString()}
           </div>
           <p className="text-base sm:text-base text-green-600/80 dark:text-green-400/80 mt-1">
-            Amount granted to support mental health
+            Total granted to support mental health
           </p>
         </CardContent>
       </Card>
@@ -51,20 +51,20 @@ export function DashboardCards({ data }: DashboardCardsProps) {
             ${averagePerSession}
           </div>
           <p className="text-base sm:text-base text-purple-600/80 dark:text-purple-400/80 mt-1">
-            Average amount per funded session
+            Average amount funded per session
           </p>
         </CardContent>
       </Card>
       <Card className="bg-amber-50 dark:bg-amber-950">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base sm:text-base font-medium">First-time Sessions</CardTitle>
+          <CardTitle className="text-base sm:text-base font-medium">Partner Sessions</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-4xl sm:text-4xl font-bold text-amber-600 dark:text-amber-400">
-            {firstTimeSessions}
+            {truthSpringCount}
           </div>
           <p className="text-base sm:text-base text-amber-600/80 dark:text-amber-400/80 mt-1">
-            New individuals receiving support
+            Sessions provided to Truth Spring Academy students!
           </p>
         </CardContent>
       </Card>
