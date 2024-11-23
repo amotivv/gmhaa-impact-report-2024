@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Heart, TrendingDown, Wallet } from "lucide-react"
+import { DonateButton } from './donate-button'
 
 interface DonationCardsProps {
   data: {
@@ -17,6 +18,7 @@ export function DonationCards({ data }: DonationCardsProps) {
     const { totalDonations, deficit } = data
   
     return (
+        <div className="space-y-8">
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="bg-green-50 dark:bg-green-950">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -43,23 +45,13 @@ export function DonationCards({ data }: DonationCardsProps) {
               ${deficit.toLocaleString()}
             </div>
             <p className="text-base sm:text-base text-red-600/80 dark:text-red-400/80 mt-1">
-              Additional funding needed
+              Additional funding needed for 2024
             </p>
           </CardContent>
         </Card>
   
-
-          <a href="#XGZDYZAY" style={{ display: 'none' }}></a>
-          <Card 
-            className="bg-purple-50 dark:bg-purple-950 cursor-pointer hover:opacity-90 transition-opacity"
-            onClick={() => {
-                const element = document.querySelector('a[href="#XGZDYZAY"]') as HTMLAnchorElement;
-                if (element) {
-                  element.click();
-                }
-            }}
-          >
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <Card className="bg-purple-50 dark:bg-purple-950">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base sm:text-base font-medium">Donate Now</CardTitle>
             <Heart className="h-5 w-5 text-purple-500" />
           </CardHeader>
@@ -73,5 +65,7 @@ export function DonationCards({ data }: DonationCardsProps) {
           </CardContent>
           </Card>
       </div>
+      <DonateButton />
+</div>
     )
   }
