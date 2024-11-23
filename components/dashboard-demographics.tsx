@@ -2,7 +2,7 @@
 
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Home } from "lucide-react" 
+import { ArrowRight, Home } from "lucide-react" 
 
 const COLORS = [
   '#2563eb', // blue-600
@@ -192,9 +192,16 @@ function DemographicCard({ title, data }: { title: string; data: { name: string;
         {/* Race/Ethnicity indicator */}
         {isRaceCard && whitePercentage > 60 && (
           <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground bg-muted/50 py-2 rounded-md">
-            <span className="text-purple-600">🤝</span>
+            <ArrowRight className="h-4 w-4 text-purple-600" />
             <span>
-              Help us expand to reach more diverse communities!
+              <a 
+                href="https://gmhaa.org/partners" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+              >
+                Help us expand to reach more diverse communities!
+              </a>
             </span>
           </div>
         )}

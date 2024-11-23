@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] })
 
+
 export const metadata: Metadata = {
   title: "GMHAA Impact Report 2024",
   description: "Non-profit impact report detailing monetary disbursements to pay for individual mental health counseling sessions in Muscogee County, Georgia.",
