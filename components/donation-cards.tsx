@@ -47,6 +47,9 @@ export function DonationCards({ data }: DonationCardsProps) {
             <p className="text-base sm:text-base text-red-600/80 dark:text-red-400/80 mt-1">
               Additional funding needed for 2024
             </p>
+            <p className="text-xs sm:text-xs text-red-600/60 dark:text-red-400/60 mt-1">
+              Last updated: December 2, 2024
+            </p>
           </CardContent>
         </Card>
   
