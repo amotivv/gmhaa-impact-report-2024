@@ -20,3 +20,7 @@ This interactive dashboard visualizes GMHAA's 2024 impact data, including:
 - **Analytics**: Vercel Analytics
 - **Icons**: Lucide React
 - **Components**: Shadcn/UI
+
+##Updates
+
+- 12/2/24 - updated donation data
