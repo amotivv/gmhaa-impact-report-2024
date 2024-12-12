@@ -29,32 +29,49 @@ export interface DonationRecord {
   fees_covered: boolean;
 }
 
+export interface MonthData {
+  month: string;
+  monthKey: string;  // Add this for proper sorting
+  sessions: number;
+  dollars: number;
+  runningTotalSessions?: number;
+  runningTotalDollars?: number;
+}
+
 if (!process.env.SESSIONS_DATA_URL || !process.env.DONATIONS_DATA_URL) {
   throw new Error('Missing required environment variables for data sources');
 }
 
 export async function fetchData(): Promise<SessionRecord[]> {
   const response = await fetch(process.env.SESSIONS_DATA_URL!);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch sessions data: ${response.statusText}`);
+  }
   return response.json();
 }
 
 export async function fetchDonations(): Promise<DonationRecord[]> {
   const response = await fetch(process.env.DONATIONS_DATA_URL!);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch donations data: ${response.statusText}`);
+  }
   return response.json();
 }
 
 export function getDashboardData(records: SessionRecord[]) {
-  // Filter for funded sessions in 2024 only
-  const fundedSessions = records.filter(record => 
-    record.funding_status === true && 
-    record.session_date.startsWith('2024')
+  const currentYear = new Date().getFullYear().toString();
+
+  // Filter for funded sessions in current year only
+  const fundedSessions = records.filter(record =>
+    record.funding_status === true &&
+    record.session_date.startsWith(currentYear)
   );
-  
+
   const totalSessions = fundedSessions.length;
   const totalDisbursed = fundedSessions.reduce((sum, record) => sum + record.funding_spend_limit, 0);
-  const averagePerSession = Math.round(totalDisbursed / totalSessions);
+  const averagePerSession = totalSessions > 0 ? Math.round(totalDisbursed / totalSessions) : 0;
   const firstTimeSessions = fundedSessions.filter(record => record.first_time).length;
-  const truthSpringCount = fundedSessions.filter(record => 
+  const truthSpringCount = fundedSessions.filter(record =>
     record.partner_ref === "Truth Spring"
   ).length;
 
@@ -68,63 +85,90 @@ export function getDashboardData(records: SessionRecord[]) {
 }
 
 export function getDonationData(donations: DonationRecord[], disbursements: SessionRecord[]) {
-  // Filter for 2024 donations
-  const donations2024 = donations.filter(donation => 
-    donation.donation_date.startsWith('2024')
+  const currentYear = new Date().getFullYear().toString();
+
+  // Filter for current year donations
+  const currentYearDonations = donations.filter(donation =>
+    donation.donation_date.startsWith(currentYear) &&
+    donation.donation_status === true  // Only count successful donations
   );
 
-  const totalDonations = donations2024.reduce((sum, donation) => 
+  const totalDonations = currentYearDonations.reduce((sum, donation) =>
     sum + parseFloat(donation.payout_amount), 0);
-  
-  // Only consider successful disbursements from 2024
-  const validDisbursements = disbursements.filter(record => 
-    record.funding_status === true && 
-    record.session_date.startsWith('2024')
+
+  // Only consider successful disbursements from current year
+  const validDisbursements = disbursements.filter(record =>
+    record.funding_status === true &&
+    record.session_date.startsWith(currentYear)
   );
-  const totalDisbursed = validDisbursements.reduce((sum, record) => 
+  const totalDisbursed = validDisbursements.reduce((sum, record) =>
     sum + record.funding_spend_limit, 0);
-  
+
   const deficit = totalDisbursed - totalDonations;
 
   return {
     totalDonations,
     deficit,
-    donationCount: donations2024.length
+    donationCount: currentYearDonations.length
   };
 }
 
-export function getMonthlyData(records: SessionRecord[]) {
-  // Filter for funded sessions in 2024 only
-  const fundedRecords = records.filter(record => 
-    record.funding_status === true &&
-    record.session_date.startsWith('2024')
-  );
-  
-  const monthlyData = fundedRecords.reduce((acc, record) => {
-    const date = new Date(record.session_date);
-    const month = date.toLocaleString('default', { month: 'short' });
-    if (!acc[month]) {
-      acc[month] = { sessions: 0, dollars: 0 };
-    }
-    acc[month].sessions++;
-    acc[month].dollars += record.funding_spend_limit;
-    return acc;
-  }, {} as Record<string, { sessions: number; dollars: number }>);
+export function getMonthlyData(records: SessionRecord[]): MonthData[] {
+  const currentYear = new Date().getFullYear().toString();
 
-  return Object.entries(monthlyData).map(([month, data]) => ({
-    month,
-    sessions: data.sessions,
-    dollars: Math.round(data.dollars)
-  }));
+  // Filter for funded sessions in current year only
+  const fundedRecords = records.filter(record =>
+    record.funding_status === true &&
+    record.session_date.startsWith(currentYear)
+  );
+
+  const monthlyData = fundedRecords.reduce((acc, record) => {
+    // Ensure we're parsing the date correctly
+    const [year, month] = record.session_date.split('-');
+    const monthKey = `${year}-${month.padStart(2, '0')}`; // Ensure consistent YYYY-MM format
+    const date = new Date(parseInt(year), parseInt(month) - 1); // Month is 0-based in JS Date
+
+    if (!acc[monthKey]) {
+      acc[monthKey] = {
+        month: date.toLocaleString('default', { month: 'short' }),
+        monthKey,
+        sessions: 0,
+        dollars: 0
+      };
+    }
+    acc[monthKey].sessions++;
+    acc[monthKey].dollars += record.funding_spend_limit;
+    return acc;
+  }, {} as Record<string, MonthData>);
+
+  // Sort chronologically and calculate running totals
+  let runningTotalSessions = 0;
+  let runningTotalDollars = 0;
+
+  return Object.entries(monthlyData)
+    .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+    .map((entry) => {
+      const data = entry[1];
+      runningTotalSessions += data.sessions;
+      runningTotalDollars += data.dollars;
+      return {
+        ...data,
+        dollars: Math.round(data.dollars),
+        runningTotalSessions,
+        runningTotalDollars: Math.round(runningTotalDollars)
+      };
+    });
 }
 
 export function getDemographicData(records: SessionRecord[]) {
-  // Filter for funded sessions in 2024 only
-  const fundedRecords = records.filter(record => 
+  const currentYear = new Date().getFullYear().toString();
+
+  // Filter for funded sessions in current year only
+  const fundedRecords = records.filter(record =>
     record.funding_status === true &&
-    record.session_date.startsWith('2024')
+    record.session_date.startsWith(currentYear)
   );
-  
+
   const sessionTypes = countPercentage(fundedRecords, 'visit_type');
   const raceEthnicity = countPercentage(fundedRecords, 'race_ethnicity');
   const gender = countPercentage(fundedRecords, 'gender');
@@ -146,14 +190,13 @@ function countLocations(records: SessionRecord[]) {
     acc[location] = (acc[location] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  
+
   return Object.entries(counts)
     .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => b.value - a.value); // Optional: sort by count descending
+    .sort((a, b) => b.value - a.value);
 }
 
 function countPercentage(records: SessionRecord[], field: keyof SessionRecord) {
-  // First get the raw counts
   const counts = records.reduce((acc, record) => {
     const value = record[field] as string;
     acc[value] = (acc[value] || 0) + 1;
@@ -161,34 +204,11 @@ function countPercentage(records: SessionRecord[], field: keyof SessionRecord) {
   }, {} as Record<string, number>);
 
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
-  
-  // Calculate exact percentages and sort by highest first
-  const items = Object.entries(counts)
+
+  return Object.entries(counts)
     .map(([name, count]) => ({
       name,
-      exactValue: (count / total) * 100,
-      value: 0  // will be set in next step
+      value: Math.round((count / total) * 100)
     }))
-    .sort((a, b) => b.exactValue - a.exactValue);
-
-  // Distribute 100 percentage points
-  let remainingPoints = 100;
-  return items.map((item, index) => {
-    if (index === items.length - 1) {
-      // Last item gets remaining points
-      return {
-        name: item.name,
-        value: remainingPoints
-      };
-    }
-    
-    const points = Math.round(item.exactValue);
-    remainingPoints -= points;
-    
-    return {
-      name: item.name,
-      value: points
-    };
-  });
+    .sort((a, b) => b.value - a.value);
 }
-

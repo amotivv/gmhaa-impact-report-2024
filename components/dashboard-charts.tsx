@@ -45,12 +45,17 @@ const CustomTooltip = ({
   type?: 'sessions' | 'dollars';
 }) => {
   if (active && payload && payload.length) {
+    // Format the month label from YYYY-MM format
+    const [year, month] = label!.split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    const formattedMonth = date.toLocaleString('default', { month: 'short' });
+
     return (
       <div className="rounded-lg border bg-background p-2 shadow-sm">
         <div className="grid gap-2">
           <div className="flex flex-col">
             <span className="text-[0.70rem] uppercase text-muted-foreground">
-              {label}
+              {formattedMonth}
             </span>
             <span className="font-bold text-blue-500">
               {type === 'sessions' ? 'Monthly: ' : 'Amount: '}
@@ -93,67 +98,81 @@ export function DashboardCharts({ data }: { data: MonthData[] }) {
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
       <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Monthly Counseling Sessions</CardTitle>
-            <CardDescription>
-              Monthly sessions (bars) and cumulative impact (line) over time
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="h-[300px] px-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={enrichedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <XAxis dataKey="month" />
-                <YAxis yAxisId="left" orientation="left" stroke="#2563eb" />
-                <YAxis yAxisId="right" orientation="right" stroke="#16a34a" />
-                <Tooltip content={<CustomTooltip type="sessions" />} />
-                <Bar 
-                  yAxisId="left"
-                  dataKey="sessions" 
-                  fill="#2563eb" 
-                  radius={[4, 4, 0, 0]} 
-                />
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="runningTotalSessions"
-                  stroke="#16a34a"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+  <CardHeader>
+    <CardTitle>Monthly Counseling Sessions</CardTitle>
+    <CardDescription>
+      Monthly sessions (bars) and cumulative impact (line) over time
+    </CardDescription>
+  </CardHeader>
+  <CardContent className="h-[300px] px-0">
+    <ResponsiveContainer width="100%" height="100%">
+      <ComposedChart data={enrichedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+        <XAxis 
+          dataKey="monthKey" 
+          tickFormatter={(value) => {
+            const [year, month] = value.split('-');
+            const date = new Date(parseInt(year), parseInt(month) - 1);
+            return date.toLocaleString('default', { month: 'short' });
+          }}
+        />
+        <YAxis yAxisId="left" orientation="left" stroke="#2563eb" />
+        <YAxis yAxisId="right" orientation="right" stroke="#16a34a" />
+        <Tooltip content={<CustomTooltip type="sessions" />} />
+        <Bar 
+          yAxisId="left"
+          dataKey="sessions" 
+          fill="#2563eb" 
+          radius={[4, 4, 0, 0]} 
+        />
+        <Line
+          yAxisId="right"
+          type="monotone"
+          dataKey="runningTotalSessions"
+          stroke="#16a34a"
+          strokeWidth={2}
+          dot={false}
+        />
+      </ComposedChart>
+    </ResponsiveContainer>
+  </CardContent>
+</Card>
 
-        <Card className="col-span-4 lg:col-span-3">
-          <CardHeader>
-            <CardTitle>Cumulative Financial Impact</CardTitle>
-            <CardDescription>
-              Total dollars granted over time, showing growing community investment
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={enrichedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip type="dollars" />} />
-                <Area
-                  type="monotone"
-                  dataKey="runningTotalDollars"
-                  fill="#16a34a"
-                  stroke="#16a34a"
-                  fillOpacity={0.2}
-                />
-                <Bar 
-                  dataKey="dollars" 
-                  fill="#2563eb" 
-                  radius={[4, 4, 0, 0]} 
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+<Card className="col-span-4 lg:col-span-3">
+  <CardHeader>
+    <CardTitle>Cumulative Financial Impact</CardTitle>
+    <CardDescription>
+      Total dollars granted over time, showing growing community investment
+    </CardDescription>
+  </CardHeader>
+  <CardContent className="h-[300px]">
+    <ResponsiveContainer width="100%" height="100%">
+      <AreaChart data={enrichedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+        <XAxis 
+          dataKey="monthKey" 
+          tickFormatter={(value) => {
+            const [year, month] = value.split('-');
+            const date = new Date(parseInt(year), parseInt(month) - 1);
+            return date.toLocaleString('default', { month: 'short' });
+          }}
+        />
+        <YAxis />
+        <Tooltip content={<CustomTooltip type="dollars" />} />
+        <Area
+          type="monotone"
+          dataKey="runningTotalDollars"
+          fill="#16a34a"
+          stroke="#16a34a"
+          fillOpacity={0.2}
+        />
+        <Bar 
+          dataKey="dollars" 
+          fill="#2563eb" 
+          radius={[4, 4, 0, 0]} 
+        />
+      </AreaChart>
+    </ResponsiveContainer>
+  </CardContent>
+</Card>
       </div>
     </div>
   )
