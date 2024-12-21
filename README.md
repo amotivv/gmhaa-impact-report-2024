@@ -23,6 +23,8 @@ This interactive dashboard visualizes GMHAA's 2024 impact data, including:
 
 ## Updates
 
+- 12/20/24 - updated donation data
+- 12/20/24 - updated disbursement data
 - 12/12/24 - updated graph legends
 - 12/12/24 - updated disbursement data
 - 12/2/24 - updated donation data
